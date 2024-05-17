@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<section class="container" style="display:flex; justify-content:space-between;">
+    
+        <div>
+            <h1>{{ doctor.name }}</h1>
+            <h2>{{ doctor.position }}</h2>
+            <h3>{{ doctor.degree }}</h3>
+            <p>{{ doctor.speciality }}</p>
+            <p>{{ doctor.institute }}</p>
+        </div>
+</section>
+
+{% endblock %}
