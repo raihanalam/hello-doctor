@@ -1,21 +1,51 @@
-from django.shortcuts import get_object_or_404, render
-from .models import Doctor
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from .models import Doctor, OnlineConsultancyRequest
+from .forms import OnlineConsultancyRequestForm
+
+from django.contrib import messages
 
 # Create your views here.
-def index(request):
+def doctor_list(request):
     doctors = Doctor.objects.all()
-    print(doctors, '<<<<<<<<<<<<<<<<<<<<<<<,')
     
     context = {
         'doctors': doctors
     }
     
-    return render(request, 'doctors/doctor__lisiting.html', context)
+    return render(request, 'doctors/doctor_lisit.html', context)
 
-def doctor(request, doctor_id):
+def doctor_profile(request, doctor_id):
+    form = OnlineConsultancyRequestForm()
+
     doctor = get_object_or_404(Doctor, pk=doctor_id)
+
+
      
     context = {
+        'form': form, 
         'doctor': doctor
     }
-    return render(request, 'doctors/doctor.html', context)
+    return render(request, 'doctors/doctor_profile.html', context)
+
+
+def online_consultancy_request(request, doctor_id):
+    doctor = get_object_or_404(Doctor, id=doctor_id)
+    if request.method == 'POST':
+        form = OnlineConsultancyRequestForm(request.POST)
+        if form.is_valid():
+            consultancy_request = form.save(commit=False)
+            consultancy_request.doctor = doctor  # Assign the doctor object
+            consultancy_request.save()
+            messages.success(request, 'Your request is successfully submitted. You will get a call for assiatance.')
+        else:
+            messages.error(request, 'There is a problem to get online consultany. Please try agian later.')
+    else:
+        form = OnlineConsultancyRequestForm()
+
+    context = {
+        'form': form,
+        'doctor': doctor
+    }
+    return render(request, 'doctors/doctor_profile.html', context)

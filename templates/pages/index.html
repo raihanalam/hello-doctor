@@ -16,30 +16,7 @@
 
 {% block content %}
 <!-- Navbar -->
-<nav class="fixed navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#" style="font-size: 25px; font-weight: bold;"><i class="fa-solid fa-stethoscope mr-3" ></i> Hello Doctor</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contact</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+
 
 <!-- Hero Section with Carousel -->
 <section id="hero">
@@ -94,20 +71,21 @@
   <h2 class="text-center mb-5">Meet Our Specialists</h2>
   <div class="row">
     {% for doctor in doctors %}
-    {% if forloop.counter <= 4%}
+    {% if forloop.counter <= 8%}
     <div class="col-md-3 mb-4">
       <div class="card">
-        <img src="{{doctor.image.url }}" class="card-img-top" alt="{{ doctor.full_name }}" style="object-fit: fill; height: 320px; width: 100%;">
+        <img src="{{doctor.image.url }}" class="card-img-top" alt="{{ doctor.full_name }}" style="object-fit: fill; height: 300px; width: 100%;">
         <div class="card-body">
           <h5 class="card-title">{{ doctor.full_name }}</h5>
           <p class="card-text">{{ doctor.speciality }}</p>
           <p class="card-text"><small class="text-muted">{{ doctor.hospital }}</small></p>
         </div>
-        <a href="" class="btn btn-light">View Profile &nbsp;<i class="fa-solid fa-arrow-right"></i></a>
+        <a href="{% url 'doctors:doctor_profile' doctor_id=doctor.id %}" class="btn btn-light">View Profile &nbsp;<i class="fa-solid fa-arrow-right"></i></a>
       </div>
     </div>
     {% endif %}
     {% endfor %}
+    <a href="{% url 'doctors:doctor_list' %}" class="btn btn-light">See More</a>
   </div>
 </section>
 
@@ -185,38 +163,4 @@
   </div>
 </section>
 
-<!-- Footer -->
-<footer class="bg-light text-center text-lg-start">
-  <div class="container p-4">
-    <div class="row">
-      <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-        <h5 class="text-uppercase">Hello Doctor</h5>
-        <p>
-          Providing accessible and personalized medical assistance to individuals from the comfort of their homes.
-        </p>
-      </div>
-      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-        <h5 class="text-uppercase">Quick Links</h5>
-        <ul class="list-unstyled mb-0">
-          <li><a href="#" class="text-dark">Home</a></li>
-          <li><a href="#" class="text-dark">About</a></li>
-          <li><a href="#" class="text-dark">Services</a></li>
-          <li><a href="#" class="text-dark">Contact</a></li>
-        </ul>
-      </div>
-      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-        <h5 class="text-uppercase">Follow Us</h5>
-        <ul class="list-unstyled mb-0">
-          <li><a href="#" class="text-dark"><i class="fab fa-facebook"></i> Facebook</a></li>
-          <li><a href="#" class="text-dark"><i class="fab fa-twitter"></i> Twitter</a></li>
-          <li><a href="#" class="text-dark"><i class="fab fa-instagram"></i> Instagram</a></li>
-          <li><a href="#" class="text-dark"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="text-center p-3 bg-dark text-white">
-    &copy; 2024 Hello Doctor. All Rights Reserved.
-  </div>
-</footer>
 {% endblock %}

@@ -4,6 +4,7 @@ from datetime import time
 
 class Speciality(models.Model):
     name = models.CharField(max_length=100)
+    description = models.CharField(max_length=400)
 
     def __str__(self):
         return self.name
@@ -17,6 +18,7 @@ class Doctor(models.Model):
     phone_number = models.CharField(max_length=15)
     image = models.ImageField(upload_to='doctors/')
     bio = models.TextField()
+    experience_year = models.IntegerField(default=0)
     availability_start_time = models.TimeField(default=time(9, 0))
     availability_end_time = models.TimeField(default=time(17, 0))
     is_active = models.BooleanField(default=True)
@@ -51,3 +53,34 @@ class DoctorAvailability(models.Model):
 
     def __str__(self):
         return f"Availability for {self.doctor.full_name}"
+    
+
+
+class OnlineConsultancyRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    )
+
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    requested_datetime = models.DateTimeField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
+    # patient = models.ForeignKey(User, on_delete=models.CASCADE)
+    patient_name = models.CharField(max_length=255, verbose_name = 'Patient Name')
+    mobile_number = models.CharField(max_length=15)
+    email = models.EmailField()
+
+    gender_choices = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other')
+    )
+    gender = models.CharField(max_length=1, choices=gender_choices)
+    symptoms = models.TextField()
+
+    def __str__(self):
+        return f'{self.patient_name} - {self.doctor.full_name} - {self.status}'
+    
