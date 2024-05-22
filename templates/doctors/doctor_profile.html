@@ -30,7 +30,7 @@
                             class="text-success">{{ doctor.availability_start_time }} -
                             {{doctor.availability_end_time}}</span></p>
                     <div class="mt-5">
-                        <a href="#" class="btn btn-primary mr-2"><i class="fas fa-calendar-alt"></i> Book
+                        <a href="{% url 'doctors:book_appointment' doctor_id=doctor.id %}" class="btn btn-primary mr-2"><i class="fas fa-calendar-alt"></i> Book
                             Appointment</a>
                         <!-- Trigger Button -->
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
@@ -41,34 +41,49 @@
 
 
                     <!-- Modal -->
-                    <div class="modal fade" id="consultancyRequestModal" tabindex="-1"
-                        aria-labelledby="consultancyRequestModalLabel" aria-hidden="true">
+                    <div class="modal fade modal-lg" id="consultancyRequestModal" tabindex="-1" aria-labelledby="consultancyRequestModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="consultancyRequestModalLabel">Request Online Consultancy
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                    <h5 class="modal-title" style="color: rgb(85, 85, 85);" id="consultancyRequestModalLabel">Request Online Consultancy</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{% url 'doctors:online_consultancy_request' doctor_id=doctor.id %}"
-                                    method="POST" style="color: rgb(94, 94, 94);">
+                                <form action="{% url 'doctors:online_consultancy_request' doctor_id=doctor.id %}" method="POST" style="color: rgb(94, 94, 94);">
                                     <div class="modal-body">
-
                                         {% csrf_token %}
-                                        {{ form|crispy }}
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                {{ form.patient_name|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.mobile_number|as_crispy_field }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                {{ form.email|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.requested_datetime|as_crispy_field }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                {{ form.gender|as_crispy_field }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ form.symptoms|as_crispy_field }}
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit"
-                                            class="btn btn-primary">Submit</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
                                     </div>
                                 </form>
-
                             </div>
                         </div>
-                    </div>
+                    </div>                    
 
                 </div>
             </div>

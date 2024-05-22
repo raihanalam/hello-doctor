@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags%}
+
+{% block title_block%}{{title}}{% endblock%}
+{% block css_block %}
+<style>
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+     <div class="sign-page card">
+          <center>
+               <div class="sign-in">
+                    <form method="POST" class="my-5">
+                         {{form | crispy }}
+                         {% csrf_token%}
+                         <button type="submit" class="btn btn-sm btn-success"> Signin </button>
+                    </form>
+                    <p>Havn't an account? <a href="{% url 'account:sign_up'%}">Signup</a></p>
+                    <p>or,<br>Signin with a test account <span style="text-align: left; color: rgb(124, 117, 117);"><br>username: test_user <br>password: 123456@test</span></p>
+                    
+               </div>
+          
+          </center>
+     </div>
+</div>
+
+{% endblock %}

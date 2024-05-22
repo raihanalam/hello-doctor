@@ -22,6 +22,8 @@
 <section id="hero">
   <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
+      <div class="overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
+
       <div class="carousel-item active">
         <img src="{% static 'img/hero-1.jpg' %}" class="d-block carousal-img" alt="Welcome to Hello Doctor">
         <div class="overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
@@ -72,9 +74,9 @@
   <div class="row">
     {% for doctor in doctors %}
     {% if forloop.counter <= 8%}
-    <div class="col-md-3 mb-4">
+    <div class="col-md-4 mb-4">
       <div class="card">
-        <img src="{{doctor.image.url }}" class="card-img-top" alt="{{ doctor.full_name }}" style="object-fit: fill; height: 300px; width: 100%;">
+        <img src="{{doctor.image.url }}" class="card-img-top" alt="{{ doctor.full_name }}" style="object-fit: fill; height: 360px; width: 100%;">
         <div class="card-body">
           <h5 class="card-title">{{ doctor.full_name }}</h5>
           <p class="card-text">{{ doctor.speciality }}</p>
@@ -135,7 +137,9 @@
 <section class="container py-5">
   <h2 class="text-center mb-5">Frequently Asked Questions</h2>
   <div class="accordion" id="faqAccordion">
-    <div class="accordion-item">
+
+    
+    <!-- <div class="accordion-item">
       <h2 class="accordion-header" id="headingOne">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           How do I book an appointment?
@@ -146,19 +150,23 @@
           You can book an appointment by registering on our platform and selecting a suitable time slot with your chosen specialist.
         </div>
       </div>
-    </div>
+    </div> -->
+
+    {% for faq in faqs %}
     <div class="accordion-item">
-      <h2 class="accordion-header" id="headingTwo">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          Are the consultations secure?
+      <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ forloop.counter }}">
+          {{ faq.question }}
         </button>
       </h2>
-      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+      <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
         <div class="accordion-body">
-          Yes, all consultations are conducted over a secure video call platform to ensure your privacy and confidentiality.
+          {{ faq.answer }}
         </div>
       </div>
     </div>
+  {% endfor %}
+   
     <!-- Add more FAQ items as needed -->
   </div>
 </section>

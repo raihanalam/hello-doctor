@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     
     'doctors',
-    'pages'
+    'pages',
+    'account'
 
 
 ]

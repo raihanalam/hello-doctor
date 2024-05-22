@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Doctor, OnlineConsultancyRequest
-from .forms import OnlineConsultancyRequestForm
+from .forms import OnlineConsultancyRequestForm, AppointmentForm
+
 
 from django.contrib import messages
 
@@ -49,3 +50,19 @@ def online_consultancy_request(request, doctor_id):
         'doctor': doctor
     }
     return render(request, 'doctors/doctor_profile.html', context)
+
+
+def book_appointment(request, doctor_id):
+    doctor = get_object_or_404(Doctor, id=doctor_id)
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST, request.FILES)
+        if form.is_valid():
+            appointment = form.save(commit=False)
+            appointment.doctor = doctor
+            appointment.save()
+            messages.success(request, 'Appointment Succesfully Booked!')  # Assuming you have a success page
+    else:
+        form = AppointmentForm()
+    
+    return render(request, 'doctors/appointment.html', {'form': form})
+

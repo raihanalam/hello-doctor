@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <img src="{% static 'img/book-appointment.png' %}" alt="Appointment Graphic" class="img-fluid mb-4">
+            <h3 class="text-center mb-4">Hassle-Free Appointment Booking</h3>
+
+            <form method="post" class="card p-3" enctype="multipart/form-data"
+                style="color: rgb(82, 82, 82); font-weight: bold;">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="patient_name" class="form-label">Patient Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="patient_name" name="patient_name"
+                                placeholder="John Doe" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="patient_phone_number" class="form-label">Phone Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <input type="tel" class="form-control" id="patient_phone_number" name="patient_phone_number"
+                                placeholder="123-456-7890" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="patient_email" class="form-label">Email (Optional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="patient_email" name="patient_email"
+                                placeholder="johndoe@example.com">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="patient_image" class="form-label">Patient Image (Optional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-image"></i></span>
+                            <input type="file" class="form-control" id="patient_image" name="patient_image">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                            <select class="form-select" aria-label="Gender" id="gender" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                                <option value="O">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="appointment_date" class="form-label">Appointment Date</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            <input type="date" class="form-control" id="appointment_date" name="appointment_date" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="appointment_time" class="form-label">Appointment Time</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                            <input type="time" class="form-control" id="appointment_time" name="appointment_time" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="symptoms" class="form-label">Symptoms (Optional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-notes-medical"></i></span>
+                            <textarea class="form-control" id="symptoms" name="symptoms" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mb-3">
+                    <button type="submit" class="btn btn-primary">Book Appointment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

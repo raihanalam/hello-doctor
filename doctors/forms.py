@@ -12,24 +12,13 @@ class DoctorForm(forms.ModelForm):
 class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
-        fields = ['patient_name', 'patient_phone_number', 'patient_email', 'doctor', 'appointment_date', 'appointment_time']
+        fields = ['patient_name', 'patient_phone_number', 'patient_email', 'patient_image', 'appointment_date', 'appointment_time', 'gender', 'symptoms']
+        widgets = {
+            'appointment_date': forms.DateInput(attrs={'type': 'date'}),
+            'appointment_time': forms.TimeInput(attrs={'type': 'time'}),
+        }
 
 
-
-# class OnlineConsultancyRequestForm(forms.ModelForm):
-
-#     class Meta:
-#         model = OnlineConsultancyRequest
-#         fields = ['requested_datetime', 'symptoms']
-#         widgets = {
-#             'requested_datetime': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-#         }
-
-#     def __init__(self, *args, **kwargs):
-#         super(OnlineConsultancyRequestForm, self).__init__(*args, **kwargs)
-#         self.helper = FormHelper()
-#         self.helper.form_method = 'post'
-#         self.helper.add_input(Submit('submit', 'Request Consultancy'))
 
 class OnlineConsultancyRequestForm(forms.ModelForm):
 
