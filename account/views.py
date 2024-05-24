@@ -13,10 +13,8 @@ def sign_up(request):
      registerd = False
 
      if request.method == 'POST':
-          print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
           my_form = CreateNewUser(data=request.POST)
           if my_form.is_valid():
-               print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
                user = my_form.save()
                registerd = True
                try:
@@ -46,3 +44,10 @@ def sign_in(request):
 def sign_out(request):
      logout(request)
      return HttpResponseRedirect(reverse('account:sign_in'))
+
+
+def choose_role_view(request):
+    return render(request, 'role_selection.html')
+
+
+

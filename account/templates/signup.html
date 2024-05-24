@@ -16,11 +16,9 @@
                <div class="col-lg-12 col-xl-11">
                     <div class="card text-black" style="border-radius: 25px; border: 0px;">
                          <div class="card-body p-md-5">
-                              <div class="row justify-content-center">
-                                   <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-
-                                        <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" style="color: rgb(162, 162, 162);">Register</p>
-
+                              <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" style="color: rgb(162, 162, 162);">Create your account</p>
+                              <div class="row justify-content-center align-items-start">
+                                   <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1 mt-4">
                                         <form method="POST" action="" class="mx-1 mx-md-4">
                                              {% csrf_token %}
 
@@ -60,6 +58,8 @@
                                              </div>
 
                                         </form>
+                                        <p class="text-center">Have an account? <a href="{% url 'account:sign_in' %}">Signin</a></p>
+
 
                                    </div>
                                    <div

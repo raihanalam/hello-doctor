@@ -10,10 +10,10 @@
         <h2 class="text-center mb-5">Meet Our Specialists</h2>
         <div class="row">
             {% for doctor in doctors %}
-            <div class="col-md-3 mb-4">
+            <div class="col-md-4 mb-4">
                 <div class="card">
                     <img src="{{doctor.image.url }}" class="card-img-top" alt="{{ doctor.full_name }}"
-                        style="object-fit: fill; height: 300px; width: 100%;">
+                        style="object-fit: fill; height: 360px; width: 100%;">
                     <div class="card-body">
                         <h5 class="card-title">{{ doctor.full_name }}</h5>
                         <p class="card-text">{{ doctor.speciality }}</p>

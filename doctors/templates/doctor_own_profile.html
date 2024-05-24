@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+     <div class="position-relative">
+          <!-- Overlay Background -->
+          <div class="overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
+          <div class="row position-relative">
+               <div class="col-md-4">
+                    <img src="{{ doctor.image.url }}" class="card-img-top img-fluid" alt="Doctor Image"
+                         style="height: 100%; object-fit: cover;">
+               </div>
+               <div class="col-md-8">
+                    <div class="card-body text-white p-4">
+                         <h2 class="card-title text-light mb-5">{{ doctor.full_name }}</h2>
+                         <p class="card-text"><i class="fas fa-graduation-cap"></i> <strong
+                                   style="margin-left: 5px; margin-right: 5px;">Degree:</strong> {{ doctor.degree }}</p>
+                         <p class="card-text"><i class="fas fa-stethoscope"></i> <strong
+                                   style="margin-left: 5px; margin-right: 5px;">Speciality:</strong>
+                              {{doctor.speciality.name}}
+                         </p>
+                         <p class="card-text"><i class="fas fa-hospital"></i> <strong
+                                   style="margin-left: 5px; margin-right: 5px;">Hospital:</strong> {{ doctor.hospital }}
+                         </p>
+                         <p class="card-text"><i class="fas fa-phone"></i> <strong
+                                   style="margin-left: 5px; margin-right: 5px;">Phone Number:</strong> 
+                                   {{doctor.phone_number}}
+                         </p>
+                         <p class="card-text"><i class="fas fa-clock"></i> <strong
+                                   style="margin-left: 5px; margin-right: 5px;">Availability:</strong> <span
+                                   class="text-success">{{ doctor.availability_start_time }} -
+                                   {{doctor.availability_end_time}}</span></p>
+                         <div class="mt-5">
+                              <a href="{% url 'doctors:add_doctor_qualifications'%}" class="btn btn-primary mr-2"> Add
+                                   Qualifications</a>
+                              <a href="{% url 'doctors:add_doctor_expertise'%}" class="btn btn-primary mr-2"> Add
+                                   Expertise</a>
+                              <a href="{% url 'doctors:add_doctor_publications'%}" class="btn btn-primary mr-2"> Add
+                                   Publication</a>
+                              <a href="{% url 'doctors:add_doctor_availability'%}" class="btn btn-primary mr-2"> Add
+                                   Availability</a>
+
+
+
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+     <!-- Tabs Section -->
+     <ul class="nav nav-tabs mt-5" id="doctorInfoTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+               <button class="nav-link active" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button"
+                    role="tab" aria-controls="about" aria-selected="true">
+                    <i class="fas fa-info-circle" style="margin-right: 5px;"></i>About
+               </button>
+          </li>
+          <li class="nav-item" role="presentation">
+               <button class="nav-link" id="qualifications-tab" data-bs-toggle="tab" data-bs-target="#qualifications"
+                    type="button" role="tab" aria-controls="qualifications" aria-selected="false">
+                    <i class="fas fa-graduation-cap" style="margin-right: 5px;"></i>Qualifications
+               </button>
+          </li>
+          <li class="nav-item" role="presentation">
+               <button class="nav-link" id="expertise-tab" data-bs-toggle="tab" data-bs-target="#expertise"
+                    type="button" role="tab" aria-controls="expertise" aria-selected="false">
+                    <i class="fas fa-stethoscope" style="margin-right: 5px;"></i> Area Of Expertise
+               </button>
+          </li>
+          <li class="nav-item" role="presentation">
+               <button class="nav-link" id="languages-tab" data-bs-toggle="tab" data-bs-target="#languages"
+                    type="button" role="tab" aria-controls="languages" aria-selected="false">
+                    <i class="fas fa-language" style="margin-right: 5px;"></i>Languages
+               </button>
+          </li>
+          <li class="nav-item" role="presentation">
+               <button class="nav-link" id="publications-tab" data-bs-toggle="tab" data-bs-target="#publications"
+                    type="button" role="tab" aria-controls="publications" aria-selected="false">
+                    <i class="fas fa-book" style="margin-right: 5px;"></i>Publications
+               </button>
+          </li>
+     </ul>
+     <div class="tab-content" id="doctorInfoTabsContent">
+          <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
+               <p class="mt-3">{{ doctor.bio }}</p>
+          </div>
+          <div class="tab-pane fade" id="qualifications" role="tabpanel" aria-labelledby="qualifications-tab">
+               {% for qual in qualification %}
+               <div class="mt-3">
+                    <h5>{{qual.degree}}</h5>
+                    <p>{{qual.institution}}</p>
+               </div>
+
+               {% endfor %}
+          </div>
+          <div class="tab-pane fade" id="expertise" role="tabpanel" aria-labelledby="expertise-tab">
+               {% for exp in expertise %}
+               <div class="mt-3">
+                    <h5>{{exp.speciality.title}}</h5>
+                    <p>{{exp.details}}</p>
+               </div>
+
+               {% endfor %}
+          </div>
+          <div class="tab-pane fade" id="languages" role="tabpanel" aria-labelledby="languages-tab">
+               <div class="mt-3">
+                    {% for lang in doctor.languages.all %}
+                    <p>{{lang.language}}</p>
+                    {% endfor %}
+               </div>
+          </div>
+          <div class="tab-pane fade" id="publications" role="tabpanel" aria-labelledby="publications-tab">
+               {% for pub in publication %}
+               <div class="mt-3 d-flex align-items-end">
+                    <h5>{{pub.title}}</h5>
+                    <span>-{{pub.journal}},</span>
+                    <small>{{pub.publication_date}}</small>
+               </div>
+
+               {% endfor %}
+          </div>
+     </div>
+</div>
+{% endblock %}

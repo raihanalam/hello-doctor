@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h3 class="text-center mb-0">Doctor's Dashboard</h3>
+            <a href="{% url 'doctors:own_profile' %}" class="btn btn-outline-light">
+                <img src=" {{user.doctor.image.url}}" alt="Profile" class="rounded-circle" width="30" height="30">
+                Profile
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="list-group" id="dashboard-menu">
+                        <a href="#booked-appointments" class="list-group-item list-group-item-action active"
+                            data-bs-toggle="collapse" data-bs-parent="#dashboard-menu">
+                            <i class="fas fa-calendar-check"></i> Booked Appointments
+                        </a>
+                        <a href="#upcoming-consultations" class="list-group-item list-group-item-action"
+                            data-bs-toggle="collapse" data-bs-parent="#dashboard-menu">
+                            <i class="fas fa-video"></i> Upcoming Online Consultations
+                        </a>
+                        <a href="#consulted-patients" class="list-group-item list-group-item-action"
+                            data-bs-toggle="collapse" data-bs-parent="#dashboard-menu">
+                            <i class="fas fa-user-md"></i> Consulted Patients
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="collapse show" id="booked-appointments">
+                        <h4 class="mb-3">Booked Appointments</h4>
+                        <div id="appointments-list">
+                            <!-- Booked appointments will be dynamically generated here -->
+                            {% for app in appointments %}
+                            <div class="card mb-2">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{app.patient_name}}</h4>
+                                    <h6>{{app.patient_phone_number}}</h6>
+                                    <p class="card-text">{{app.appointment_date}} at {{app.appointment_time}}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="collapse" id="upcoming-consultations">
+                        <h4 class="mb-3">Upcoming Online Consultations</h4>
+                        <div id="consultations-list">
+                            {% for cons in consultations %}
+                            <div class="card mb-2">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{cons.patient_name}}</h4>
+                                    <h6>{{cons.mobile_number}}</h6>
+                                    <p class="card-text">{{cons.requested_datetime}}</p>
+                                    <a href="#schedule-meeting-{{cons.id}}" class="list-group-item list-group-item-action"
+                                        data-bs-toggle="collapse" data-bs-parent="#consultations-list">
+                                        <i class="fas fa-video-plus"></i> Schedule Meeting
+                                    </a>
+                                    <div class="collapse" id="schedule-meeting-{{cons.id}}">
+                                        <h4 class="mb-3">Schedule Google Meet Meeting</h4>
+                                        <form method="post" action="{% url 'doctors:schedule_meeting' %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="patient">Select Patient</label>
+                                                <select class="form-control" id="patient" name="patient">
+                                                    {% for patient in patients %}
+                                                    <option value="{{ patient.id }}">{{ patient.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="meeting_time">Meeting Time</label>
+                                                <input type="datetime-local" class="form-control" id="meeting_time"
+                                                    name="meeting_time" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mt-3">Schedule Meeting</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="collapse" id="consulted-patients">
+                        <h4 class="mb-3">Consulted Patients</h4>
+                        <div id="consulted-patients-list">
+                            <!-- Consulted patients will be dynamically generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var collapsibles = document.querySelectorAll('[data-bs-toggle="collapse"]');
+    collapsibles.forEach(function(collapseToggle) {
+        collapseToggle.addEventListener('click', function() {
+            var parent = collapseToggle.getAttribute('data-bs-parent');
+            if (parent) {
+                var shownCollapses = document.querySelectorAll(parent + ' .collapse.show');
+                shownCollapses.forEach(function(shownCollapse) {
+                    if (shownCollapse !== collapseToggle) {
+                        var bootstrapCollapse = new bootstrap.Collapse(shownCollapse);
+                        bootstrapCollapse.hide();
+                    }
+                });
+            }
+        });
+    });
+});
+</script>

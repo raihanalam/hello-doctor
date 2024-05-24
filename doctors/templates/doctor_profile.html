@@ -30,25 +30,29 @@
                             class="text-success">{{ doctor.availability_start_time }} -
                             {{doctor.availability_end_time}}</span></p>
                     <div class="mt-5">
-                        <a href="{% url 'doctors:book_appointment' doctor_id=doctor.id %}" class="btn btn-primary mr-2"><i class="fas fa-calendar-alt"></i> Book
+                        <a href="tel:{{doctor.phone_number}}" class="btn btn-light mr-2"><i class="fa-solid fa-phone-volume mr-1"></i>Call Now</a>
+                        <a href="{% url 'doctors:book_appointment' doctor_id=doctor.id %}"
+                            class="btn btn-primary mr-2"><i class="fas fa-calendar-alt"></i> Book
                             Appointment</a>
-                        <!-- Trigger Button -->
-                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-                            data-bs-target="#consultancyRequestModal">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#onineConsultancyModal">
                             <i class="fas fa-video"></i> Online Consultancy
                         </button>
-                    </div>
 
-
-                    <!-- Modal -->
-                    <div class="modal fade modal-lg" id="consultancyRequestModal" tabindex="-1" aria-labelledby="consultancyRequestModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" style="color: rgb(85, 85, 85);" id="consultancyRequestModalLabel">Request Online Consultancy</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form action="{% url 'doctors:online_consultancy_request' doctor_id=doctor.id %}" method="POST" style="color: rgb(94, 94, 94);">
+                        <!-- Modal -->
+                        <div class="modal fade w-100" id="onineConsultancyModal" tabindex="-1" aria-labelledby="onineConsultancyModal"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="onineConsultancyModalLabel">Modal title</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{% url 'doctors:online_consultancy_request' doctor_id=doctor.id %}"
+                                    method="POST" style="color: rgb(94, 94, 94);">
                                     <div class="modal-body">
                                         {% csrf_token %}
                                         <div class="row">
@@ -76,19 +80,50 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                     </div>
                                 </form>
+                                </div>
                             </div>
                         </div>
-                    </div>                    
 
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+      <!-- Availability Section -->
+    <div class="mt-5 text-center">
+        <h3 class="text-light mb-4">Doctor Availability</h3>
+        <div class="d-flex justify-content-center">
+            <div class="card mr-2 p-3 {% if doctoravailability.monday %}bg-success  {% endif %}">
+                <strong>Monday</strong>
+            </div>
+            <div class="card mr-2 p-3 {% if doctoravailability.tuesday %}bg-success  {% endif %}">
+                <strong>Tuesday</strong>
+            </div>
+            <div class="card mr-2 p-3 {% if doctoravailability.wednesday %}bg-success  {% endif %}">
+                <strong>Wednesday</strong>
+            </div>
+            <div class="card mr-2 p-3 {% if doctoravailability.thursday %}bg-success  {% endif %}">
+                <strong>Thursday</strong>
+            </div>
+            <div class="card mr-2 p-3 {% if doctoravailability.friday %}bg-success {% endif %}">
+                <strong>Friday</strong>
+            </div>
+            <div class="card mr-2 p-3 {% if doctoravailability.saturday %}bg-success  {% endif %}">
+                <strong>Saturday</strong>
+            </div>
+            <div class="card mr-2 p-3 {% if doctoravailability.sunday %}bg-success  {% endif %}">
+                <strong>Sunday</strong>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Tabs Section -->
     <ul class="nav nav-tabs mt-5" id="doctorInfoTabs" role="tablist">

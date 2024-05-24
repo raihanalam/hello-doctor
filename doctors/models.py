@@ -15,7 +15,7 @@ class Language(models.Model):
     def __str__(self):
         return f"{self.language}"
 class Doctor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor')
     full_name = models.CharField(max_length=255)
     degree = models.CharField(max_length=255)
     speciality = models.ForeignKey(Speciality, on_delete=models.SET_NULL, null=True)
@@ -29,11 +29,55 @@ class Doctor(models.Model):
     availability_end_time = models.TimeField(default=time(17, 0))
     chamber_address = models.CharField(max_length=464, verbose_name = "Chamber Address")
     is_active = models.BooleanField(default=True)
+    verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.full_name
+        
+class Qualification(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    degree = models.CharField(max_length=255)
+    institution = models.CharField(max_length=255)
+    year = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.degree} from {self.institution} ({self.year})"
+
+class Expertise(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    speciality = models.ForeignKey(Speciality, on_delete=models.CASCADE)
+    details = models.TextField()
+
+    def __str__(self):
+        return f"Expertise in {self.speciality.name} - {self.doctor.full_name}"
+
+
+class Publication(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    journal = models.CharField(max_length=255)
+    publication_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.title} - {self.journal} ({self.publication_date})"
+
+
+class DoctorAvailability(models.Model):
+    doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE)
+    monday = models.BooleanField(default=True)
+    tuesday = models.BooleanField(default=True)
+    wednesday = models.BooleanField(default=True)
+    thursday = models.BooleanField(default=True)
+    friday = models.BooleanField(default=True)
+    saturday = models.BooleanField(default=False)
+    sunday = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Availability for {self.doctor.full_name}"
+    
 
 class Appointment(models.Model):
+    user = models.ForeignKey(User, on_delete = models.DO_NOTHING, related_name='patient_appointments', blank=True, null=True)
     patient_name = models.CharField(max_length=255)
     patient_phone_number = models.CharField(max_length=15)
     patient_email = models.EmailField(blank=True,)
@@ -54,21 +98,7 @@ class Appointment(models.Model):
         unique_together = ('doctor', 'appointment_date', 'appointment_time')
 
     def __str__(self):
-        return f"Appointment with {self.doctor.full_name} on {self.appointment_date} at {self.appointment_time}"
-
-class DoctorAvailability(models.Model):
-    doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE)
-    monday = models.BooleanField(default=True)
-    tuesday = models.BooleanField(default=True)
-    wednesday = models.BooleanField(default=True)
-    thursday = models.BooleanField(default=True)
-    friday = models.BooleanField(default=True)
-    saturday = models.BooleanField(default=False)
-    sunday = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Availability for {self.doctor.full_name}"
-    
+        return f"Appointment with {self.doctor.full_name} on {self.appointment_date} at {self.appointment_time}"    
 
 
 class OnlineConsultancyRequest(models.Model):
@@ -99,34 +129,6 @@ class OnlineConsultancyRequest(models.Model):
     def __str__(self):
         return f'{self.patient_name} - {self.doctor.full_name} - {self.status}'
     
-    
-class Qualification(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    degree = models.CharField(max_length=255)
-    institution = models.CharField(max_length=255)
-    year = models.IntegerField()
-
-    def __str__(self):
-        return f"{self.degree} from {self.institution} ({self.year})"
-
-class Expertise(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    speciality = models.ForeignKey(Speciality, on_delete=models.CASCADE)
-    details = models.TextField()
-
-    def __str__(self):
-        return f"Expertise in {self.speciality.name} - {self.doctor.full_name}"
-
-
-
-class Publication(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    journal = models.CharField(max_length=255)
-    publication_date = models.DateField()
-
-    def __str__(self):
-        return f"{self.title} - {self.journal} ({self.publication_date})"
     
 class FAQ(models.Model):
     question = models.CharField(max_length=255)
