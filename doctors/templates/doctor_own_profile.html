@@ -2,6 +2,20 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
+{%block style %}
+<style>
+     .bg-timing {
+          background-color: rgb(44, 181, 151);
+          color: white;
+     }
+     .font-time{
+          color: rgb(255, 220, 82);
+          font-weight: bold;
+
+     }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
      <div class="position-relative">
@@ -25,13 +39,14 @@
                                    style="margin-left: 5px; margin-right: 5px;">Hospital:</strong> {{ doctor.hospital }}
                          </p>
                          <p class="card-text"><i class="fas fa-phone"></i> <strong
-                                   style="margin-left: 5px; margin-right: 5px;">Phone Number:</strong> 
-                                   {{doctor.phone_number}}
+                                   style="margin-left: 5px; margin-right: 5px;">Phone Number:</strong>
+                              {{doctor.phone_number}}
                          </p>
-                         <p class="card-text"><i class="fas fa-clock"></i> <strong
-                                   style="margin-left: 5px; margin-right: 5px;">Availability:</strong> <span
-                                   class="text-success">{{ doctor.availability_start_time }} -
-                                   {{doctor.availability_end_time}}</span></p>
+                         <p class="card-text"><i class="fas fa-location"></i> <strong
+                                   style="margin-left: 5px; margin-right: 5px;">Chamber Address:</strong>
+                              {{doctor.chamber_address}}
+                         </p>
+
                          <div class="mt-5">
                               <a href="{% url 'doctors:add_doctor_qualifications'%}" class="btn btn-primary mr-2"> Add
                                    Qualifications</a>
@@ -39,13 +54,85 @@
                                    Expertise</a>
                               <a href="{% url 'doctors:add_doctor_publications'%}" class="btn btn-primary mr-2"> Add
                                    Publication</a>
-                              <a href="{% url 'doctors:add_doctor_availability'%}" class="btn btn-primary mr-2"> Add
+                              <a href="{% url 'doctors:add_doctor_availability'%}" class="btn btn-primary mr-2"> Update
                                    Availability</a>
 
 
 
                          </div>
                     </div>
+               </div>
+          </div>
+     </div>
+
+     <!-- Availability Section -->
+     <div class="mt-5 text-center">
+          <!-- <h3 class="mb-4" style="color: rgb(163, 163, 163);"><i class="fas fa-clock mr-2"></i>Doctor Availability</h3> -->
+
+
+          <div class="d-flex justify-content-center">
+               <div class="card mr-2 p-3 {% if doctoravailability.monday %} bg-timing  {% endif %}">
+                    <strong>Monday</strong>
+                    {% if doctoravailability.monday %}
+                    <span class="font-time"> {{doctoravailability.monday_start_time}} -
+                         {{doctoravailability.monday_end_time}} </span>
+                    {% else %}
+                    <span>Not Available</span>
+                    {% endif %}
+               </div>
+               <div class="card mr-2 p-3 {% if doctoravailability.tuesday %}bg-timing  {% endif %}">
+                    <strong>Tuesday</strong>
+                    {% if doctoravailability.tuesday %}
+                    <span class="font-time"> {{doctoravailability.tuesday_start_time}} -
+                         {{doctoravailability.tuesday_end_time}} </span>
+                    {% else %}
+                    <span>Not Available</span>
+                    {% endif %}
+               </div>
+               <div class="card mr-2 p-3 {% if doctoravailability.wednesday %}bg-timing  {% endif %}">
+                    <strong>Wednesday</strong>
+                    {% if doctoravailability.wednesday %}
+                    <span class="font-time"> {{doctoravailability.wednesday_start_time}} -
+                         {{doctoravailability.wednesday_end_time}} </span>
+                    {% else %}
+                    <span>Not Available</span>
+                    {% endif %}
+               </div>
+               <div class="card mr-2 p-3 {% if doctoravailability.thursday %}bg-timing  {% endif %}">
+                    <strong>Thursday</strong>
+                    {% if doctoravailability.thursday %}
+                    <span class="font-time"> {{doctoravailability.thursday_start_time}} -
+                         {{doctoravailability.thursday_end_time}} </span>
+                    {% else %}
+                    <span>Not Available</span>
+                    {% endif %}
+               </div>
+               <div class="card mr-2 p-3 {% if doctoravailability.friday %}bg-timing {% endif %}">
+                    <strong>Friday</strong>
+                    {% if doctoravailability.friday %}
+                    <span class="font-time"> {{doctoravailability.friday_start_time}} -
+                         {{doctoravailability.friday_end_time}} </span>
+                    {% else %}
+                    <span>Not Available</span>
+                    {% endif %}
+               </div>
+               <div class="card mr-2 p-3 {% if doctoravailability.saturday %}bg-timing  {% endif %}">
+                    <strong>Saturday</strong>
+                    {% if doctoravailability.saturday %}
+                    <span class="font-time"> {{doctoravailability.saturday_start_time}} -
+                         {{doctoravailability.saturday_end_time}} </span>
+                    {% else %}
+                    <span>Not Available</span>
+                    {% endif %}
+               </div>
+               <div class="card mr-2 p-3 {% if doctoravailability.sunday %}bg-timing  {% endif %}">
+                    <strong>Sunday</strong>
+                    {% if doctoravailability.sunday %}
+                    <span class="font-time"> {{doctoravailability.sunday_start_time}} -
+                         {{doctoravailability.sunday_end_time}} </span>
+                    {% else %}
+                    <span>Not Available</span>
+                    {% endif %}
                </div>
           </div>
      </div>
@@ -71,17 +158,18 @@
                </button>
           </li>
           <li class="nav-item" role="presentation">
-               <button class="nav-link" id="languages-tab" data-bs-toggle="tab" data-bs-target="#languages"
-                    type="button" role="tab" aria-controls="languages" aria-selected="false">
-                    <i class="fas fa-language" style="margin-right: 5px;"></i>Languages
-               </button>
-          </li>
-          <li class="nav-item" role="presentation">
                <button class="nav-link" id="publications-tab" data-bs-toggle="tab" data-bs-target="#publications"
                     type="button" role="tab" aria-controls="publications" aria-selected="false">
                     <i class="fas fa-book" style="margin-right: 5px;"></i>Publications
                </button>
           </li>
+          <li class="nav-item" role="presentation">
+               <button class="nav-link" id="languages-tab" data-bs-toggle="tab" data-bs-target="#languages"
+                    type="button" role="tab" aria-controls="languages" aria-selected="false">
+                    <i class="fas fa-language" style="margin-right: 5px;"></i>Languages
+               </button>
+          </li>
+
      </ul>
      <div class="tab-content" id="doctorInfoTabsContent">
           <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
@@ -89,38 +177,44 @@
           </div>
           <div class="tab-pane fade" id="qualifications" role="tabpanel" aria-labelledby="qualifications-tab">
                {% for qual in qualification %}
-               <div class="mt-3">
+               <div class="card mt-3 d-flex p-2">
                     <h5>{{qual.degree}}</h5>
-                    <p>{{qual.institution}}</p>
+                    <span>{{qual.institution}}</span>
+                    <small>{{qual.year}}</small>
                </div>
 
                {% endfor %}
           </div>
           <div class="tab-pane fade" id="expertise" role="tabpanel" aria-labelledby="expertise-tab">
                {% for exp in expertise %}
-               <div class="mt-3">
-                    <h5>{{exp.speciality.title}}</h5>
+               <div class="card mt-3 d-flex p-2">
+                    <h5>{{exp.speciality.name}}</h5>
                     <p>{{exp.details}}</p>
                </div>
 
                {% endfor %}
           </div>
-          <div class="tab-pane fade" id="languages" role="tabpanel" aria-labelledby="languages-tab">
-               <div class="mt-3">
-                    {% for lang in doctor.languages.all %}
-                    <p>{{lang.language}}</p>
-                    {% endfor %}
-               </div>
-          </div>
+
           <div class="tab-pane fade" id="publications" role="tabpanel" aria-labelledby="publications-tab">
                {% for pub in publication %}
-               <div class="mt-3 d-flex align-items-end">
+               <div class="card mt-3 p-3">
                     <h5>{{pub.title}}</h5>
-                    <span>-{{pub.journal}},</span>
+                    <span>{{pub.journal}},</span>
                     <small>{{pub.publication_date}}</small>
                </div>
 
                {% endfor %}
+          </div>
+
+          <div class="tab-pane fade" id="languages" role="tabpanel" aria-labelledby="languages-tab">
+               <div class="mt-3">
+                    <ul>
+                         {% for lang in doctor.languages.all %}
+                         <li><span>{{lang.language}}</span></li>
+                         {% endfor %}
+                    </ul>
+
+               </div>
           </div>
      </div>
 </div>

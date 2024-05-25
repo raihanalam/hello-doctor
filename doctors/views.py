@@ -13,8 +13,9 @@ from .models import Doctor
 from .forms import DoctorBasicInfoForm, QualificationForm, ExpertiseForm, PublicationForm, DoctorAvailabilityForm
 
 from .models import Doctor, Qualification, Expertise, Publication, DoctorAvailability
-
 from django.contrib import messages
+from django.urls import reverse
+from django.db.models import Q
 
 # Create your views here.
 def doctor_list(request):
@@ -27,20 +28,29 @@ def doctor_list(request):
     return render(request, 'doctor_lisit.html', context)
 
 def doctor_profile(request, doctor_id):
+    
     form = OnlineConsultancyRequestForm()
     doctor = get_object_or_404(Doctor, pk=doctor_id)
-    
+    qualification = Qualification.objects.filter(doctor=doctor)
+    expertise = Expertise.objects.filter(doctor=doctor)
+    publication = Publication.objects.filter(doctor=doctor)
+
     try:
         doctoravailability = DoctorAvailability.objects.get(doctor=doctor)
     except:
-        doctoravailability=[]
+        doctoravailability = []
 
-     
     context = {
         'form': form, 
         'doctor': doctor,
         'doctoravailability': doctoravailability,
+        'doctor':doctor,
+        'qualification':qualification,
+        'expertise': expertise,
+        'publication': publication
+
     }
+    
     return render(request, 'doctor_profile.html', context)
 
 
@@ -73,7 +83,10 @@ def book_appointment(request, doctor_id):
             appointment = form.save(commit=False)
             appointment.doctor = doctor
             appointment.save()
-            messages.success(request, 'Appointment Succesfully Booked!')  # Assuming you have a success page
+           
+            messages.success(request, 'Appointment Succesfully Booked!')
+        else:
+            print(form.errors)
     else:
         form = AppointmentForm()
     
@@ -88,17 +101,15 @@ def doctor_dashboard_view(request):
     # Fetch data for the dashboard
 
     doctor = Doctor.objects.get(user=request.user)
-    appointments = Appointment.objects.filter(doctor=doctor)
+    appointments = Appointment.objects.filter(Q(doctor=doctor) & (Q(status='booked') | Q(status='confirmed')))
     consultations = OnlineConsultancyRequest.objects.filter(doctor=doctor)
-    notifications = []  # Populate this with your logic
-    consulted_patients = []  # Populate this with your logic
+    consulted_patients = Appointment.objects.filter(doctor=doctor, status='consulted')  # Populate this with your logic
     patients = Patient.objects.all()  # Assuming you have a Patient model
 
     context = {
         'doctor':doctor,
         'appointments': appointments,
         'consultations': consultations,
-        'notifications': notifications,
         'consulted_patients': consulted_patients,
         'patients': patients,
     }
@@ -134,13 +145,19 @@ def doctor_own_profile(request):
     qualification = Qualification.objects.filter(doctor=doctor)
     expertise = Expertise.objects.filter(doctor=doctor)
     publication = Publication.objects.filter(doctor=doctor)
+    
+    try:
+        doctoravailability = DoctorAvailability.objects.get(doctor=doctor)
+    except:
+        doctoravailability = []
 
     context = {
 
         'doctor':doctor,
         'qualification':qualification,
         'expertise': expertise,
-        'publication': publication
+        'publication': publication,
+        'doctoravailability':doctoravailability
 
     }
     return render(request, 'doctor_own_profile.html', context)
@@ -199,3 +216,65 @@ def add_doctor_availability(request):
         form = DoctorAvailabilityForm()
     return render(request, 'add_availability.html', {'form': form})
 
+
+
+@login_required
+def confirm_appointment(request, appointment_id):
+    appointment = Appointment.objects.get(id=appointment_id)
+    if request.user == appointment.doctor.user:
+        appointment.status = 'confirmed'
+        appointment.save()
+        messages.success(request, 'The appointment has been confirmed.')
+    else:
+        messages.error(request, 'You are not authorized to confirm this appointment.')
+    return redirect(reverse('doctors:doctor_dashboard'))
+
+@login_required
+def consult_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    if request.user == appointment.doctor.user:
+        appointment.status = 'consulted'
+        appointment.save()
+        messages.success(request, 'The appointment has been marked as consulted.')
+    else:
+        messages.error(request, 'You are not authorized to mark this appointment as consulted.')
+    return redirect(reverse('doctors:doctor_dashboard'))
+
+@login_required
+def cancel_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    if request.user == appointment.doctor.user:
+        appointment.status = 'canceled'
+        appointment.save()
+        messages.success(request, 'The appointment has been canceled.')
+    else:
+        messages.error(request, 'You are not authorized to cancel this appointment.')
+    return redirect(reverse('doctors:doctor_dashboard'))
+
+
+
+
+
+
+
+@login_required
+def confirm_online_consultancy(request, cons_id):
+    consultancy = OnlineConsultancyRequest.objects.get(id=cons_id)
+    if request.user == consultancy.doctor.user:
+        consultancy.status = 'confirmed'
+        consultancy.save()
+        messages.success(request, 'The online consultancy request has been accepted.')
+    else:
+        messages.error(request, 'You are not authorized to confirm this consultancy.')
+    return redirect(reverse('doctors:doctor_dashboard'))
+
+@login_required
+def cancel_online_consultancy(request, cons_id):
+    consultancy = get_object_or_404(OnlineConsultancyRequest, id=cons_id)
+    if request.user == consultancy.doctor.user:
+        consultancy.status = 'canceled'
+        consultancy.save()
+        messages.success(request, 'The online consultancy has been canceled.')
+    else:
+        messages.error(request, 'You are not authorized to cancel this consultation.')
+    return redirect(reverse('doctors:doctor_dashboard'))

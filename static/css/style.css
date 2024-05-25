@@ -1,3 +1,23 @@
+body, html {
+	height: 100%;
+ }
+ .full-height-container {
+	min-height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #f8f9fa;
+ }
+ .form-container {
+	background: white;
+	padding: 2rem;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	max-width: 500px;
+	width: 100%;
+ }
+
+
 .btn-primary {
 	background-color: rgb(37, 142, 218);
 	color: white;
@@ -19,3 +39,7 @@
 	background-color: rgb(44, 181, 151);
 	color: white;
 }
+
+
+
+

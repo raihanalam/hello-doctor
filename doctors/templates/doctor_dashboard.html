@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5" style="min-height: 100vh;">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h3 class="text-center mb-0">Doctor's Dashboard</h3>
@@ -21,7 +21,7 @@
                         </a>
                         <a href="#upcoming-consultations" class="list-group-item list-group-item-action"
                             data-bs-toggle="collapse" data-bs-parent="#dashboard-menu">
-                            <i class="fas fa-video"></i> Upcoming Online Consultations
+                            <i class="fas fa-video"></i> Online Consultations
                         </a>
                         <a href="#consulted-patients" class="list-group-item list-group-item-action"
                             data-bs-toggle="collapse" data-bs-parent="#dashboard-menu">
@@ -35,60 +35,103 @@
                         <div id="appointments-list">
                             <!-- Booked appointments will be dynamically generated here -->
                             {% for app in appointments %}
-                            <div class="card mb-2">
+                            <div class="card mb-2 p-2">
+                                <div class="position-relative">
+                                    <span
+                                        class="badge bg-dark position-absolute top-0 end-0 m-2">{{app.status|capfirst}}</span>
+                                </div>
                                 <div class="card-body">
                                     <h4 class="card-title">{{app.patient_name}}</h4>
                                     <h6>{{app.patient_phone_number}}</h6>
+                                    <span>{{app.symptoms}}</span>
                                     <p class="card-text">{{app.appointment_date}} at {{app.appointment_time}}</p>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="collapse" id="upcoming-consultations">
-                        <h4 class="mb-3">Upcoming Online Consultations</h4>
-                        <div id="consultations-list">
-                            {% for cons in consultations %}
-                            <div class="card mb-2">
-                                <div class="card-body">
-                                    <h4 class="card-title">{{cons.patient_name}}</h4>
-                                    <h6>{{cons.mobile_number}}</h6>
-                                    <p class="card-text">{{cons.requested_datetime}}</p>
-                                    <a href="#schedule-meeting-{{cons.id}}" class="list-group-item list-group-item-action"
-                                        data-bs-toggle="collapse" data-bs-parent="#consultations-list">
-                                        <i class="fas fa-video-plus"></i> Schedule Meeting
-                                    </a>
-                                    <div class="collapse" id="schedule-meeting-{{cons.id}}">
-                                        <h4 class="mb-3">Schedule Google Meet Meeting</h4>
-                                        <form method="post" action="{% url 'doctors:schedule_meeting' %}">
-                                            {% csrf_token %}
-                                            <div class="form-group">
-                                                <label for="patient">Select Patient</label>
-                                                <select class="form-control" id="patient" name="patient">
-                                                    {% for patient in patients %}
-                                                    <option value="{{ patient.id }}">{{ patient.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="meeting_time">Meeting Time</label>
-                                                <input type="datetime-local" class="form-control" id="meeting_time"
-                                                    name="meeting_time" required>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary mt-3">Schedule Meeting</button>
-                                        </form>
+                                    <div class="mt-2">
+                                        {% if app.status == 'booked' %}
+                                        <a href="{% url 'doctors:confirm_appointment' app.id %}"
+                                            class="btn btn-info mb-2"><i class="fas fa-check-circle"></i> Confirm</a>
+                                        {% else %}
+                                        <a href="{% url 'doctors:consult_appointment' app.id %}"
+                                            class="btn btn-success mb-2"><i class="fas fa-user-md"></i> Consult</a>
+                                        {% endif %}
+                                        <a href="{% url 'doctors:cancel_appointment' app.id %}"
+                                            class="btn btn-danger mb-2"><i class="fas fa-times-circle"></i> Cancel</a>
                                     </div>
                                 </div>
                             </div>
                             {% endfor %}
                         </div>
                     </div>
+                    <div class="collapse" id="upcoming-consultations">
+                        <h4 class="mb-3"> Online Consultations</h4>
+                        <div id="consultations-list">
+                            {% for cons in consultations %}
+                            <div class="card mb-3 shadow-sm">
+                                <div class="position-relative">
+                                    <span class="badge bg-dark position-absolute top-0 end-0 m-2">
+                                        {{cons.status|capfirst }}</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="">
+                                        <div>
+                                            <h4 class="card-title mb-1">{{ cons.patient_name }}</h4>
+                                            <h6 class="text-muted">{{ cons.mobile_number }}</h6>
+                                            <h6 class="text-muted">{{ cons.email }}</h6>
+                                            <span class="text-muted">{{ cons.symptoms }}</span>
+                                            <p class="card-text">{{ cons.requested_datetime }}</p>
+                                        </div>
+                                        <div class="collapse mt-3" id="schedule-meeting-{{ cons.id }}">
+                                            <h6 class="">Schedule Google Meet Meeting</h6>
+                                            <a href="https://calendar.google.com/calendar/u/0/r/eventedit?add={{ cons.email }}&dates={{ cons.requested_datetime|date:'Ymd\\THis' }}/{{ cons.requested_datetime|date:'Ymd\\THis' }}&text=Meeting+with+{{ cons.patient_name|urlencode }}+for+medical+consultancy."
+                                                class="btn btn-info mt-1" target="_blank"><i
+                                                    class="fas fa-calendar-plus"></i> Set in Google Meet</a>
+                                        </div>
+                                        <div class="mt-2">
+                                            {% if cons.status == 'pending' %}
+
+                                            <a href="{% url 'doctors:confirm_online_consultancy' cons.id %}" class="btn btn-info mb-2"><i class="fas fa-check-circle"></i>
+                                                Confirm</a>
+                                            
+                                            {% else %}
+                                                <a href="#schedule-meeting-{{ cons.id }}" class="btn btn-success mb-2"
+                                                data-bs-toggle="collapse" data-bs-parent="#consultations-list"><i
+                                                    class="fas fa-video"></i> Schedule Meeting</a>
+
+                                            {% endif %}
+                                            <a href="{% url 'doctors:cancel_online_consultancy' cons.id %}" class="btn btn-danger mb-2"><i class="fas fa-times-circle"></i>
+                                                Cancel</a>
+                                        </div>
+
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
                     <div class="collapse" id="consulted-patients">
                         <h4 class="mb-3">Consulted Patients</h4>
                         <div id="consulted-patients-list">
                             <!-- Consulted patients will be dynamically generated here -->
+                            {% for consulted in consulted_patients %}
+                            <div class="card mb-2 p-2">
+                                <div class="position-relative">
+                                    <span
+                                        class="badge bg-success position-absolute top-0 end-0 m-2">{{consulted.status|capfirst}}</span>
+                                </div>
+                                <div class="card-body">
+                                    <h4 class="card-title">{{consulted.patient_name}}</h4>
+                                    <h6>{{consulted.patient_phone_number}}</h6>
+                                    <span>{{consulted.symptoms}}</span>
+                                    <p class="card-text">{{consulted.appointment_date}} at {{consulted.appointment_time}}</p>
+                                </div>
+                            </div>
+
+                            {% endfor %}
+                            
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -97,21 +140,21 @@
 {% endblock %}
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var collapsibles = document.querySelectorAll('[data-bs-toggle="collapse"]');
-    collapsibles.forEach(function(collapseToggle) {
-        collapseToggle.addEventListener('click', function() {
-            var parent = collapseToggle.getAttribute('data-bs-parent');
-            if (parent) {
-                var shownCollapses = document.querySelectorAll(parent + ' .collapse.show');
-                shownCollapses.forEach(function(shownCollapse) {
-                    if (shownCollapse !== collapseToggle) {
-                        var bootstrapCollapse = new bootstrap.Collapse(shownCollapse);
-                        bootstrapCollapse.hide();
-                    }
-                });
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        var collapsibles = document.querySelectorAll('[data-bs-toggle="collapse"]');
+        collapsibles.forEach(function (collapseToggle) {
+            collapseToggle.addEventListener('click', function () {
+                var parent = collapseToggle.getAttribute('data-bs-parent');
+                if (parent) {
+                    var shownCollapses = document.querySelectorAll(parent + ' .collapse.show');
+                    shownCollapses.forEach(function (shownCollapse) {
+                        if (shownCollapse !== collapseToggle) {
+                            var bootstrapCollapse = new bootstrap.Collapse(shownCollapse);
+                            bootstrapCollapse.hide();
+                        }
+                    });
+                }
+            });
         });
     });
-});
 </script>

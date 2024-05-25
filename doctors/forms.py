@@ -75,13 +75,35 @@ class PublicationForm(forms.ModelForm):
 class DoctorAvailabilityForm(forms.ModelForm):
     class Meta:
         model = DoctorAvailability
-        fields = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        fields = [
+            'monday', 'monday_start_time', 'monday_end_time',
+            'tuesday', 'tuesday_start_time', 'tuesday_end_time',
+            'wednesday', 'wednesday_start_time', 'wednesday_end_time',
+            'thursday', 'thursday_start_time', 'thursday_end_time',
+            'friday', 'friday_start_time', 'friday_end_time',
+            'saturday', 'saturday_start_time', 'saturday_end_time',
+            'sunday', 'sunday_start_time', 'sunday_end_time'
+        ]
         labels = {
             'monday': 'Monday',
+            'monday_start_time': 'Monday Start Time',
+            'monday_end_time': 'Monday End Time',
             'tuesday': 'Tuesday',
+            'tuesday_start_time': 'Tuesday Start Time',
+            'tuesday_end_time': 'Tuesday End Time',
             'wednesday': 'Wednesday',
+            'wednesday_start_time': 'Wednesday Start Time',
+            'wednesday_end_time': 'Wednesday End Time',
             'thursday': 'Thursday',
+            'thursday_start_time': 'Thursday Start Time',
+            'thursday_end_time': 'Thursday End Time',
             'friday': 'Friday',
+            'friday_start_time': 'Friday Start Time',
+            'friday_end_time': 'Friday End Time',
             'saturday': 'Saturday',
+            'saturday_start_time': 'Saturday Start Time',
+            'saturday_end_time': 'Saturday End Time',
             'sunday': 'Sunday',
+            'sunday_start_time': 'Sunday Start Time',
+            'sunday_end_time': 'Sunday End Time',
         }

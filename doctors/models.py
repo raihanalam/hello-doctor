@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import time
+from django.core.files.base import ContentFile
 
 class Speciality(models.Model):
     name = models.CharField(max_length=100)
@@ -62,18 +63,40 @@ class Publication(models.Model):
         return f"{self.title} - {self.journal} ({self.publication_date})"
 
 
+
 class DoctorAvailability(models.Model):
-    doctor = models.OneToOneField(Doctor, on_delete=models.CASCADE)
+    doctor = models.OneToOneField('Doctor', on_delete=models.CASCADE)
     monday = models.BooleanField(default=True)
+    monday_start_time = models.TimeField(default=time(9, 0))
+    monday_end_time = models.TimeField(default=time(17, 0))
+    
     tuesday = models.BooleanField(default=True)
+    tuesday_start_time = models.TimeField(default=time(9, 0))
+    tuesday_end_time = models.TimeField(default=time(17, 0))
+    
     wednesday = models.BooleanField(default=True)
+    wednesday_start_time = models.TimeField(default=time(9, 0))
+    wednesday_end_time = models.TimeField(default=time(17, 0))
+    
     thursday = models.BooleanField(default=True)
+    thursday_start_time = models.TimeField(default=time(9, 0))
+    thursday_end_time = models.TimeField(default=time(17, 0))
+    
     friday = models.BooleanField(default=True)
+    friday_start_time = models.TimeField(default=time(9, 0))
+    friday_end_time = models.TimeField(default=time(17, 0))
+    
     saturday = models.BooleanField(default=False)
+    saturday_start_time = models.TimeField(default=time(9, 0))
+    saturday_end_time = models.TimeField(default=time(17, 0))
+    
     sunday = models.BooleanField(default=False)
+    sunday_start_time = models.TimeField(default=time(9, 0))
+    sunday_end_time = models.TimeField(default=time(17, 0))
 
     def __str__(self):
         return f"Availability for {self.doctor.full_name}"
+
     
 
 class Appointment(models.Model):
@@ -81,10 +104,18 @@ class Appointment(models.Model):
     patient_name = models.CharField(max_length=255)
     patient_phone_number = models.CharField(max_length=15)
     patient_email = models.EmailField(blank=True,)
-    patient_image = models.ImageField(upload_to='patient_image')
+    patient_image = models.ImageField(upload_to='patient_image', blank=True, null=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     appointment_date = models.DateField()
     appointment_time = models.TimeField()
+    appointment_status = (
+        ('booked', 'Booked'),
+        ('confirmed', 'Confirmed'),
+        ('consulted', 'Consulted'),
+        ('canceled', 'Canceled')
+    )
+    status = models.CharField(choices = appointment_status, default='booked', max_length=10)
+
     gender_choices = (
         ('M', 'Male'),
         ('F', 'Female'),
@@ -99,6 +130,11 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"Appointment with {self.doctor.full_name} on {self.appointment_date} at {self.appointment_time}"    
+    
+    def save(self, *args, **kwargs):
+        if isinstance(self.patient_image, bytes):
+            self.patient_image = ContentFile(self.patient_image)
+        super().save(*args, **kwargs)
 
 
 class OnlineConsultancyRequest(models.Model):

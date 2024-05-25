@@ -1,13 +1,22 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block style %}
+<style>
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h2>Doctor Registration - Availability</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+<div class="container full-height-container">
+    <div class="form-container">
+        <h2 class="text-center mb-4"><i class="fas fa-user-md"></i> Doctor - Availability</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-save"></i> Save
+            </button>
+        </form>
+    </div>
 </div>
 {% endblock %}
