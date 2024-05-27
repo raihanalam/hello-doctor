@@ -30,6 +30,8 @@ class Doctor(models.Model):
     availability_end_time = models.TimeField(default=time(17, 0))
     chamber_address = models.CharField(max_length=464, verbose_name = "Chamber Address")
     is_active = models.BooleanField(default=True)
+    # bmdc_registration_number = models.CharField(max_length=464, verbose_name = "BMDC Registration Number")
+
     verified = models.BooleanField(default=False)
 
     def __str__(self):
@@ -126,6 +128,7 @@ class Appointment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        ordering=['-created_at']
         unique_together = ('doctor', 'appointment_date', 'appointment_time')
 
     def __str__(self):

@@ -12,20 +12,54 @@ from django.contrib.auth.models import User
 from .models import Doctor
 from .forms import DoctorBasicInfoForm, QualificationForm, ExpertiseForm, PublicationForm, DoctorAvailabilityForm
 
-from .models import Doctor, Qualification, Expertise, Publication, DoctorAvailability
+from .models import Doctor,Speciality, Qualification, Expertise, Publication, DoctorAvailability
 from django.contrib import messages
 from django.urls import reverse
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 # Create your views here.
+# def doctor_list(request):
+#     doctors = Doctor.objects.all()
+    
+#     context = {
+#         'doctors': doctors
+#     }
+    
+#     return render(request, 'doctor_lisit.html', context)
+
+
+
 def doctor_list(request):
+    query = request.GET.get('q')
+    speciality_id = request.GET.get('speciality')
+
     doctors = Doctor.objects.all()
-    
+    specialities = Speciality.objects.all()
+
+    if query:
+        doctors = doctors.filter(
+            Q(full_name__icontains=query) | 
+            Q(degree__icontains=query) | 
+            Q(speciality__name__icontains=query) |
+            Q(hospital__icontains=query)|
+            Q(bio__icontains=query)|
+            Q(languages__language__icontains=query)
+        ).distinct()
+
+    if speciality_id:
+        doctors = doctors.filter(speciality_id=speciality_id)
+
+    paginator = Paginator(doctors, 10)  # Show 9 doctors per page
+    page_number = request.GET.get('page')
+    doctors = paginator.get_page(page_number)
+
     context = {
-        'doctors': doctors
+        'doctors': doctors,
+        'specialities': specialities,
+        'is_paginated': doctors.has_other_pages(),
     }
-    
-    return render(request, 'doctor_lisit.html', context)
+    return render(request, 'doctor_list.html', context)
 
 def doctor_profile(request, doctor_id):
     
@@ -64,6 +98,13 @@ def online_consultancy_request(request, doctor_id):
             consultancy_request.save()
             messages.success(request, 'Your request is successfully submitted. You will get a call for assiatance.')
         else:
+                # Extracting error messages
+            error_messages = []
+            for field, errors in form.errors.items():
+                for error in errors:
+                     error_messages.append(error)
+            for message in error_messages:
+                messages.warning(request, message)
             messages.error(request, 'There is a problem to get online consultany. Please try agian later.')
     else:
         form = OnlineConsultancyRequestForm()

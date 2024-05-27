@@ -4,12 +4,11 @@
 
 {% block style %}
 <style>
-.carousal-img{
-  height: 95vh;
-  width: 100vw;
-  object-fit: cover;
-}
-
+  .carousal-img {
+    height: 95vh;
+    width: 100vw;
+    object-fit: cover;
+  }
 </style>
 
 {% endblock %}
@@ -20,6 +19,22 @@
 
 <!-- Hero Section with Carousel -->
 <section id="hero">
+  <div class="search-container position-absolute"
+    style="z-index: 20; top:52%; left:25%; ">
+    <form method="GET" action="{% url 'doctors:doctor_list' %}"
+      class="d-flex flex-wrap mb-4 justify-content-center align-items-center">
+      <input class="form-control me-2 mb-2" style="height: 60px; width: 500px; max-width: 100%;" type="search" name="q"
+        placeholder="Search by name, speciality, degree, hospital..." aria-label="Search" value="{{ request.GET.q }}">
+      <select class="form-select me-2 mb-2" name="speciality" style="height: 60px; width: 200px;">
+        <option value="">All Specialities</option>
+        {% for speciality in specialities %}
+        <option value="{{ speciality.id }}">{{ speciality.name }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn btn-outline-success mb-2" style="height: 60px; width: 200px;" type="submit"><i
+          class="fas fa-search"></i> Search</button>
+    </form>
+  </div>
   <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
       <div class="overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-75"></div>
@@ -73,21 +88,22 @@
   <h2 class="text-center mb-5">Meet Our Specialists</h2>
   <div class="row">
     {% for doctor in doctors %}
-    {% if forloop.counter <= 8%}
-    <div class="col-md-4 mb-4">
+    {% if forloop.counter <= 8%} <div class="col-md-4 mb-4">
       <div class="card">
-        <img src="{{doctor.image.url }}" class="card-img-top" alt="{{ doctor.full_name }}" style="object-fit: fill; height: 360px; width: 100%;">
+        <img src="{{doctor.image.url }}" class="card-img-top" alt="{{ doctor.full_name }}"
+          style="object-fit: fill; height: 360px; width: 100%;">
         <div class="card-body">
           <h5 class="card-title">{{ doctor.full_name }}</h5>
           <p class="card-text">{{ doctor.speciality }}</p>
           <p class="card-text"><small class="text-muted">{{ doctor.hospital }}</small></p>
         </div>
-        <a href="{% url 'doctors:doctor_profile' doctor_id=doctor.id %}" class="btn btn-light">View Profile &nbsp;<i class="fa-solid fa-arrow-right"></i></a>
+        <a href="{% url 'doctors:doctor_profile' doctor_id=doctor.id %}" class="btn btn-light">View Profile &nbsp;<i
+            class="fa-solid fa-arrow-right"></i></a>
       </div>
-    </div>
-    {% endif %}
-    {% endfor %}
-    <a href="{% url 'doctors:doctor_list' %}" class="btn btn-light">See More</a>
+  </div>
+  {% endif %}
+  {% endfor %}
+  <a href="{% url 'doctors:doctor_list' %}" class="btn btn-light">See More</a>
   </div>
 </section>
 
@@ -138,7 +154,7 @@
   <h2 class="text-center mb-5">Frequently Asked Questions</h2>
   <div class="accordion" id="faqAccordion">
 
-    
+
     <!-- <div class="accordion-item">
       <h2 class="accordion-header" id="headingOne">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -155,18 +171,22 @@
     {% for faq in faqs %}
     <div class="accordion-item">
       <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ forloop.counter }}">
+        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button"
+          data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}"
+          aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+          aria-controls="collapse{{ forloop.counter }}">
           {{ faq.question }}
         </button>
       </h2>
-      <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
+      <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+        aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
         <div class="accordion-body">
           {{ faq.answer }}
         </div>
       </div>
     </div>
-  {% endfor %}
-   
+    {% endfor %}
+
     <!-- Add more FAQ items as needed -->
   </div>
 </section>

@@ -23,7 +23,14 @@ def sign_up(request):
                except:
                     messages.warning(request,"There is a problem creting in your accont. Please check and try again!")
                return HttpResponseRedirect(reverse('account:sign_in'))
-
+          else:
+                # Extracting error messages
+               error_messages = []
+               for field, errors in my_form.errors.items():
+                    for error in errors:
+                         error_messages.append(error)
+               for message in error_messages:
+                    messages.warning(request, message)
      return render(request,'signup.html',context={'title':'Heloo Doctor | Signup','form':my_form,'registerd':registerd})
 
 def sign_in(request):
